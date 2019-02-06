@@ -2,8 +2,9 @@ pragma solidity ^0.5.0;
 
 import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import './Offchainsig.sol';
 
-contract Token is Ownable {
+contract Token is Ownable,Offchainsig {
 
     using SafeMath for uint256;
 
@@ -20,7 +21,6 @@ contract Token is Ownable {
         string  name;        
         uint256 balance;
         uint256 limit;
-        uint256 nonce;
     }
 
     // parameters  ---------------------------------------------------------------
@@ -43,11 +43,6 @@ contract Token is Ownable {
     function balanceOf(address _owner)
     public view returns (uint256) {
         return accs[_owner].balance;
-    }
-
-    function nonceOf(address _owner)
-    public view returns (uint256) {
-        return accs[_owner].nonce;
     }
 
     function limitOf(address _owner)
@@ -141,18 +136,4 @@ contract Token is Ownable {
         }
     }
 
-    function _verify(
-        address _from,bytes memory _message,
-        bytes32 _r,bytes32 _s,uint8 _v
-    ) internal {
-        bytes32 hash=keccak256(abi.encodePacked(
-            byte(0x19),byte(0),
-            this,accs[_from].nonce,
-            _message
-        ));
-        
-        address from = ecrecover(hash,_v,_r,_s);
-        require(from==_from,"sender-address-does-not-match");
-        accs[_from].nonce++;
-    }
 }
