@@ -13,7 +13,7 @@ contract Offchainsig {
         address _from,bytes memory _message,
         bytes32 _r,bytes32 _s,uint8 _v
     ) internal {
-        bytes32 hash=keccak256(abi.encodePacked(
+        bytes32 hash = keccak256(abi.encodePacked(
             byte(0x19),byte(0),
             this,nonces[_from],
             _message

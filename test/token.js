@@ -40,13 +40,19 @@ contract("token", (accounts) => {
         await token.mint(addr1,1000);
         assert.equal(1000,await token.balanceOf(addr1));
 
+        // normal transfer
         await transfer(addr1,pvk1,addr2,500);
-        assert.equal(495,await token.balanceOf(addr2));
+        assert.equal(495,await token.balanceOf(addr1));
+        assert.equal(500,await token.balanceOf(addr2));
         assert.equal(5,await token.balanceOf(addr3));
 
-        await transfer(addr1,pvk1,addr2,500);
+        // not enough to pay for tax, so, exclude it
+        await transfer(addr1,pvk1,addr2,495);
         assert.equal(0,await token.balanceOf(addr1));
+        assert.equal(995,await token.balanceOf(addr2));
+        assert.equal(5,await token.balanceOf(addr3));
     })
+    
 })
 
 
